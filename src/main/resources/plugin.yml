@@ -1,5 +1,5 @@
 name: PopulationPacedBorders
-version: 1.0.0
+version: 2.0.0
 main: com.example.PopulationPacedBordersPlugin
 description: The world border changes depending on the number of players.
 author: VaccinoPower
