@@ -51,10 +51,9 @@ public class PopulationPacedBordersPlugin extends JavaPlugin implements Listener
     }
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
-        int chunkCount = (int)(borderRadius * borderRadius) * 4;
         Component worldBorderInfo = Component.text()
                 .content("More players = bigger world. World border: ")
-                .append(Component.text(chunkCount, NamedTextColor.GOLD)
+                .append(Component.text((int)borderRadius, NamedTextColor.GOLD)
                         .decoration(TextDecoration.BOLD, true))
                 .append(Component.text(" chunks.", NamedTextColor.GRAY))
                 .build();
