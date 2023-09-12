@@ -6,7 +6,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -14,19 +13,17 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
+import java.util.Set;
 
 public class PopulationPacedBordersPlugin extends JavaPlugin implements Listener {
     private int chunkSize;
     String defaultFormula;
     private ConfigurationSection worldsSection;
     private int maxOnline;
-    private double borderRadius;
 
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(this, this);
-        getConfig().options().copyDefaults(true);
-        saveConfig();
         loadConfig();
         if (!validate()) {
             return;
@@ -49,15 +46,36 @@ public class PopulationPacedBordersPlugin extends JavaPlugin implements Listener
             updateWorldSize(online, worldName);
         }
     }
+
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
+        final String startMessage = "More players = bigger world.\nWorld border: ";
+        String defaultWorld = "world";
+        World motdWorld = getMotdWorld(defaultWorld);
+        int borderRadius = (int)(motdWorld.getWorldBorder().getSize() / 16);
+        final Component chunkRadius = Component.text(borderRadius, NamedTextColor.GOLD)
+                .decoration(TextDecoration.BOLD, true);
+        final Component endMessage = Component.text(" chunks.", NamedTextColor.GRAY);
         Component worldBorderInfo = Component.text()
-                .content("More players = bigger world. World border: ")
-                .append(Component.text((int)borderRadius, NamedTextColor.GOLD)
-                        .decoration(TextDecoration.BOLD, true))
-                .append(Component.text(" chunks.", NamedTextColor.GRAY))
+                .content(startMessage)
+                .append(chunkRadius)
+                .append(endMessage)
                 .build();
         event.motd(worldBorderInfo);
+    }
+
+    private World getMotdWorld(String defaultWorld) {
+        Set<String> configWorlds = worldsSection.getKeys(false);
+        World motdWorld = getServer().getWorld(defaultWorld);
+        if (motdWorld == null || !configWorlds.contains(defaultWorld)) {
+            for (String world : configWorlds) {
+                motdWorld = getServer().getWorld(world);
+                if (motdWorld != null) {
+                    return motdWorld;
+                }
+            }
+        }
+        return getServer().getWorlds().get(0);
     }
 
     private boolean validate() {
@@ -94,18 +112,14 @@ public class PopulationPacedBordersPlugin extends JavaPlugin implements Listener
         final double EPSILON = 1e-6;
         if (Math.abs(worldBorder.getSize() - calculatedSize) > EPSILON) {
             worldBorder.setSize(calculatedSize);
-            if (worldName.equals("world")) {
-                borderRadius = calculatedSize;
-            }
         }
     }
 
     private void loadConfig() {
-        FileConfiguration config = getConfig();
-        maxOnline = config.getInt("max_online", 1);
-        chunkSize = config.getInt("chunk_size", 16);
-        worldsSection = config.getConfigurationSection("worlds");
-        defaultFormula = config.getString("default_formula", "x");
+        maxOnline = getConfig().getInt("max_online", 1);
+        chunkSize = getConfig().getInt("chunk_size", 16);
+        worldsSection = getConfig().getConfigurationSection("worlds");
+        defaultFormula = getConfig().getString("default_formula", "x");
     }
 
     private void updateMaxOnline(int online) {
