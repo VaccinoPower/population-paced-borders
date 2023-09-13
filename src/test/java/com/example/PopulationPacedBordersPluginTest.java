@@ -37,11 +37,24 @@ public class PopulationPacedBordersPluginTest {
             world.getWorldBorder().setSize(INITIAL_BORDER_SIZE);
         }
         plugin.saveConfig();
+        plugin.reloadConfig();
     }
 
     @AfterEach
     public void tearDown() {
         MockBukkit.unmock();
+    }
+
+    @Test
+    @DisplayName("Set maximum online and checking world border size")
+    public void testSetMaxOnlineAndVerifyWorldBorders() {
+        plugin.getConfig().set("max_online", 10);
+        plugin.saveConfig();
+        server.reload();
+        for (String world : WORLD_NAMES) {
+            Assertions.assertEquals(10 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+                    "World border is not expanded correctly.");
+        }
     }
 
     @ParameterizedTest
