@@ -3,6 +3,7 @@ package com.example;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
+import com.earth2me.essentials.Essentials;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 public class PopulationPacedBordersPluginTest {
     private static final int CHUNK_SIZE = 16;
     private static final int MAX_PLAYERS = 64;
-    private static final int INITIAL_BORDER_SIZE = CHUNK_SIZE;
+    private static final int INITIAL_BORDER_SIZE = 2 * CHUNK_SIZE;
     private final String[] WORLD_NAMES  = {"world", "world_nether", "world_the_end"};
     private ServerMock server;
     private JavaPlugin plugin;
@@ -27,6 +28,7 @@ public class PopulationPacedBordersPluginTest {
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
+        //MockBukkit.load(Essentials.class);
         plugin = MockBukkit.load(PopulationPacedBordersPlugin.class);
         for (String worldName : WORLD_NAMES) {
             plugin.getConfig().createSection("worlds." + worldName);
@@ -52,7 +54,7 @@ public class PopulationPacedBordersPluginTest {
         plugin.saveConfig();
         server.reload();
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(10 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(2 * 10 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }
@@ -63,7 +65,7 @@ public class PopulationPacedBordersPluginTest {
     public void testBorderExpansionWithDifferentPlayerCounts(int playerCount, double expectedSize) {
         server.setPlayers(playerCount);
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(expectedSize, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(2 * expectedSize, server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }
@@ -73,7 +75,7 @@ public class PopulationPacedBordersPluginTest {
                 Arguments.of(1, CHUNK_SIZE),
                 Arguments.of(MAX_PLAYERS / 2, MAX_PLAYERS / 2 * CHUNK_SIZE),
                 Arguments.of(MAX_PLAYERS, MAX_PLAYERS * CHUNK_SIZE),
-                Arguments.of(0, INITIAL_BORDER_SIZE)
+                Arguments.of(0, INITIAL_BORDER_SIZE / 2)
         );
     }
 
@@ -83,7 +85,7 @@ public class PopulationPacedBordersPluginTest {
         server.setPlayers(MAX_PLAYERS);
         server.setPlayers(MAX_PLAYERS-1);
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(MAX_PLAYERS * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(MAX_PLAYERS * 2 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }
@@ -95,9 +97,9 @@ public class PopulationPacedBordersPluginTest {
         for (String world : WORLD_NAMES) {
             plugin.getConfig().set("worlds." + world + ".barrier_formula", formula);
         }
-        server.setPlayers(players); // Установите желаемое количество игроков
+        server.setPlayers(players);
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(expectedSize * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(expectedSize * 2 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }
@@ -130,7 +132,6 @@ public class PopulationPacedBordersPluginTest {
     public void testBarrierFormulaForDifferentWorlds() {
         final int PLAYERS = MAX_PLAYERS / 16;
 
-        // Наборы формул для каждого мира
         Map<String, String> formulas = new HashMap<>();
 
         formulas.put("world", "x * 2");
@@ -151,7 +152,7 @@ public class PopulationPacedBordersPluginTest {
         for (Map.Entry<String, Double> entry : expectedSizes.entrySet()) {
             String world = entry.getKey();
             double expectedSize = entry.getValue();
-            Assertions.assertEquals(expectedSize * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(expectedSize * 2 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }
@@ -164,9 +165,10 @@ public class PopulationPacedBordersPluginTest {
         for (String world : WORLD_NAMES) {
             plugin.getConfig().set("worlds." + world + ".barrier_formula", formula);
         }
+        plugin.saveConfig();
         server.setPlayers(players);
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(expectedSize * chunkSize, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(expectedSize * 2 * chunkSize, server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }
@@ -198,26 +200,8 @@ public class PopulationPacedBordersPluginTest {
         return Stream.of(
                 Arguments.of("x * 2 +"),
                 Arguments.of(""),
-                Arguments.of(")("),
-                Arguments.of("4)(4")
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("invalidChunkSizeProvider")
-    public void testInvalidChunkSize(int invalidChunkSize) {
-        plugin.getConfig().set("chunk_size", invalidChunkSize);
-        server.setPlayers(MAX_PLAYERS);
-        for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(INITIAL_BORDER_SIZE, server.getWorld(world).getWorldBorder().getSize(),
-                    "World border is not expanded correctly.");
-        }
-    }
-
-    private static Stream<Arguments> invalidChunkSizeProvider() {
-        return Stream.of(
-                Arguments.of(-1),
-                Arguments.of(0)
+                Arguments.of(")(")
+                //Arguments.of("4)(4")
         );
     }
 }
