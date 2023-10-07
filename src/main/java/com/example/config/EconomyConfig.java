@@ -13,17 +13,7 @@ public class EconomyConfig extends AbstractConfig {
     }
 
     public int getBalance() {
-        int balance = getInt(EXPANSION_BALANCE);
-        int price;
-        try {
-            price = getExpansionPrice();
-        } catch (InvalidFormulaException e) {
-            return balance;
-        }
-        if (balance >= price) {
-            return price - 1;
-        }
-        return balance;
+        return getInt(EXPANSION_BALANCE);
     }
 
     public String getExpansionFormula() {
