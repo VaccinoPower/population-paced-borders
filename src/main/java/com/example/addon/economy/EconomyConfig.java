@@ -1,14 +1,18 @@
-package com.example.config;
+package com.example.addon.economy;
 
+import com.example.config.AbstractConfig;
+import com.example.config.Configurator;
 import com.example.exeption.InvalidFormulaException;
 import com.example.util.ExpressionCalculator;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.config.ConfigKey.EXPANSION_BALANCE;
 import static com.example.config.ConfigKey.EXPANSION_BANK_LEVEL;
 import static com.example.config.ConfigKey.EXPANSION_FORMULA;
 
 public class EconomyConfig extends AbstractConfig {
-    protected EconomyConfig(Configurator configurator) {
+    public EconomyConfig(Configurator configurator) {
         super(configurator);
     }
 
@@ -36,12 +40,6 @@ public class EconomyConfig extends AbstractConfig {
         return (int)ExpressionCalculator.evaluateExpression(getExpansionFormula(), getBankLevel());
     }
 
-    public void recalculate(int chunkSize) {
-        final int bankLevel = getBankLevel();
-        final int updatedBankLevel = bankLevel <= chunkSize ? 0 : ((bankLevel - chunkSize) % chunkSize);
-        setBankLevel(updatedBankLevel);
-    }
-
     public String aboutBalance() {
         String expansionPrice;
         try {
@@ -52,6 +50,9 @@ public class EconomyConfig extends AbstractConfig {
         return String.format("Bank level: %d%n$%d / $%s for expansion.", getBankLevel(), getBalance(), expansionPrice);
     }
 
+    public void calculateExpansive() throws InvalidFormulaException {
+        calculateExpansive(0);
+    }
     public void calculateExpansive(int money) throws InvalidFormulaException {
         int bankMoney = getBalance() + money;
         int price = getExpansionPrice();
@@ -70,5 +71,11 @@ public class EconomyConfig extends AbstractConfig {
             price = getExpansionPrice();
         }
         setBalance(bankMoney);
+    }
+
+    public Map<String, Double> getWorldSizesMap(Iterable<String> worlds) {
+        Map<String, Double> worldSizesMap = new HashMap<>();
+        worlds.forEach(worldName -> worldSizesMap.put(worldName, 2.0 * getBankLevel()));
+        return worldSizesMap;
     }
 }

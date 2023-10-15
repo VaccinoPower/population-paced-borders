@@ -14,10 +14,6 @@ import static net.kyori.adventure.text.format.NamedTextColor.RED;
 public class CommandExecutorHandler implements CommandExecutor {
     private final List<Command> subcommands = new ArrayList<>();
 
-    public CommandExecutorHandler() {
-
-    }
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (!"ppb".equalsIgnoreCase(command.getName())) {

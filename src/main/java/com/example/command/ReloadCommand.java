@@ -1,18 +1,20 @@
 package com.example.command;
 
 import com.example.config.ConfigManager;
+import com.example.event.InitializeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class ReloadCommand extends PPBCommand {
-    private final ConfigManager config;
+    private final ConfigManager configManager;
 
-    public ReloadCommand(ConfigManager config) {
+    public ReloadCommand(ConfigManager configManager) {
         super("reload");
         super.setPermission("ppb.command.reload");
         this.description = "Reload Plugin.";
         this.usageMessage = "Usage: /ppb reload";
-        this.config = config;
+        this.configManager = configManager;
     }
 
     @Override
@@ -23,7 +25,8 @@ public class ReloadCommand extends PPBCommand {
         if (!isAvailable(sender, args, 0)) {
             return true;
         }
-        config.reload();
+        configManager.reload();
+        Bukkit.getPluginManager().callEvent(new InitializeEvent());
         return true;
     }
 }

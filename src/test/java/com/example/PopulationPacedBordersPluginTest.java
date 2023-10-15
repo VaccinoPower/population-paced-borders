@@ -20,7 +20,8 @@ import java.util.stream.Stream;
 public class PopulationPacedBordersPluginTest {
     private static final int CHUNK_SIZE = 16;
     private static final int MAX_PLAYERS = 64;
-    private static final int INITIAL_BORDER_SIZE = 2 * CHUNK_SIZE;
+    private static final int INITIAL_BORDER_SIZE = 1;
+
     private final String[] WORLD_NAMES  = {"world", "world_nether", "world_the_end"};
     private ServerMock server;
     private JavaPlugin plugin;
@@ -28,7 +29,6 @@ public class PopulationPacedBordersPluginTest {
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
-        //MockBukkit.load(Essentials.class);
         plugin = MockBukkit.load(PopulationPacedBordersPlugin.class);
         for (String worldName : WORLD_NAMES) {
             plugin.getConfig().createSection("worlds." + worldName);
@@ -75,7 +75,7 @@ public class PopulationPacedBordersPluginTest {
                 Arguments.of(1, CHUNK_SIZE),
                 Arguments.of(MAX_PLAYERS / 2, MAX_PLAYERS / 2 * CHUNK_SIZE),
                 Arguments.of(MAX_PLAYERS, MAX_PLAYERS * CHUNK_SIZE),
-                Arguments.of(0, INITIAL_BORDER_SIZE / 2)
+                Arguments.of(0, INITIAL_BORDER_SIZE / 2.0)
         );
     }
 

@@ -3,7 +3,7 @@ package com.example.config;
 import static com.example.config.ConfigKey.MAX_ONLINE;
 
 public class ServerLimitsConfig extends AbstractConfig {
-    protected ServerLimitsConfig(Configurator configurator) {
+    public ServerLimitsConfig(Configurator configurator) {
         super(configurator);
     }
 
