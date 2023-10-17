@@ -7,9 +7,7 @@ import com.example.util.ExpressionCalculator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.config.ConfigKey.EXPANSION_BALANCE;
-import static com.example.config.ConfigKey.EXPANSION_BANK_LEVEL;
-import static com.example.config.ConfigKey.EXPANSION_FORMULA;
+import static com.example.config.ConfigKey.*;
 
 public class EconomyConfig extends AbstractConfig {
     public EconomyConfig(Configurator configurator) {
@@ -34,6 +32,15 @@ public class EconomyConfig extends AbstractConfig {
 
     public void setBankLevel(int level) {
         setValue(EXPANSION_BANK_LEVEL, level);
+        setBlocksLevel(getBlocksLevel() + level);
+    }
+
+    public int getBlocksLevel() {
+        return getInt(EXPANSION_BLOCKS_LEVEL);
+    }
+
+    public void setBlocksLevel(int level) {
+        setValue(EXPANSION_BLOCKS_LEVEL, level);
     }
 
     public int getExpansionPrice() throws InvalidFormulaException {
@@ -75,7 +82,7 @@ public class EconomyConfig extends AbstractConfig {
 
     public Map<String, Double> getWorldSizesMap(Iterable<String> worlds) {
         Map<String, Double> worldSizesMap = new HashMap<>();
-        worlds.forEach(worldName -> worldSizesMap.put(worldName, 2.0 * getBankLevel()));
+        worlds.forEach(worldName -> worldSizesMap.put(worldName, 2.0 * getBlocksLevel()));
         return worldSizesMap;
     }
 }

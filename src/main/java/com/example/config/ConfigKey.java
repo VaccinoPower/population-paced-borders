@@ -13,6 +13,7 @@ public enum ConfigKey {
     EXPANSION_BALANCE("expansion_balance", "0"),
     EXPANSION_FORMULA("expansion_formula", "x"),
     EXPANSION_BANK_LEVEL("bank_level", "0"),
+    EXPANSION_BLOCKS_LEVEL("blocks_level", "0"),
     INITIAL_BARRIER_SIZE("initial_barrier_size", "0");
 
     public final String key;
