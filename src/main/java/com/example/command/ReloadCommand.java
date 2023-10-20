@@ -15,18 +15,12 @@ public class ReloadCommand extends PPBCommand {
         this.description = "Reload Plugin.";
         this.usageMessage = "Usage: /ppb reload";
         this.configManager = configManager;
+        addArgsRule(args -> args.length == 0, super.getUsage());
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String command, @NotNull String[] args) {
-        if (!isCommand(command)) {
-            return false;
-        }
-        if (!isAvailable(sender, args, 0)) {
-            return true;
-        }
+    protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
         configManager.reload();
         Bukkit.getPluginManager().callEvent(new InitializeEvent());
-        return true;
     }
 }

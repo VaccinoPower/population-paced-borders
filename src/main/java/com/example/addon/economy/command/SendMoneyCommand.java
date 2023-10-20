@@ -8,6 +8,7 @@ import com.example.command.PPBCommand;
 import com.example.config.WorldConfig;
 import com.example.exeption.InvalidFormulaException;
 import net.kyori.adventure.text.Component;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -29,50 +30,37 @@ public class SendMoneyCommand extends PPBCommand {
         this.economyConfig = configManager.getEconomyConfig();
         this.worldConfig = configManager.getWorldConfig();
         this.extraBlocksKey = extraBlocksKey;
+        addArgsRule(args -> args.length == 1, super.getUsage());
+        addArgsRule(args -> NumberUtils.isCreatable(args[0]), super.getUsage());
+        addRule((sender, args) -> getUser(sender).getMoney().subtract(getMoney(args[0])).signum() != -1, "Not enough money.");
+        addArgsRule(args -> getMoney(args[0]).signum() == 1, "Amount to pay must be positive.");
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String command, @NotNull String[] args) {
-        if (!isCommand(command)) {
-            return false;
-        }
-        if (!isAvailable(sender, args, 1)) {
-            return true;
-        }
-        final BigDecimal money;
-        try {
-            money = new BigDecimal(args[0]);
-        } catch (NumberFormatException e) {
-            sender.sendMessage(Component.text(getUsage(), RED));
-            return true;
-        }
-        final User user = JavaPlugin.getPlugin(Essentials.class).getUser(sender.getName());
-        if (!checkMoney(user, money)) {
-            return true;
-        }
+    protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
+        final BigDecimal money = getMoney(args[0]);
+        final User user = getUser(sender);
         try {
             pay(money);
             user.takeMoney(money);
         } catch (InvalidFormulaException e) {
             sender.sendMessage(Component.text("[ERROR] Invalid formula. Please contact an admin.", RED));
-            return true;
         }
-        return true;
     }
 
-    private static boolean checkMoney(User user, BigDecimal money) {
-        if (user.getMoney().subtract(money).signum() != 1) {
-            user.sendMessage("Not enough money.");
-            return false;
-        }
-        if (money.signum() != 1) {
-            user.sendMessage("Amount to pay must be positive.");
-            return false;
-        }
-        return true;
+    private static User getUser(CommandSender sender) {
+        return JavaPlugin.getPlugin(Essentials.class).getUser(sender.getName());
     }
 
-    private void pay(Number money)  throws InvalidFormulaException {
+    private static BigDecimal getMoney(String number) {
+        try {
+            return new BigDecimal(number);
+        } catch (NumberFormatException e) {
+            return BigDecimal.valueOf(-1);
+        }
+    }
+
+    private void pay(Number money) throws InvalidFormulaException {
         economyConfig.calculateExpansive(money.intValue());
         Map<String, Double> worldSizesMap = economyConfig.getWorldSizesMap(worldConfig.getWorlds());
         worldConfig.resizeWorlds(extraBlocksKey, worldSizesMap);

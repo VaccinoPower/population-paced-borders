@@ -22,25 +22,31 @@ public class EconomyConfig extends AbstractConfig {
         return getString(EXPANSION_FORMULA);
     }
 
-    public void setBalance(int balance) {
-        setValue(EXPANSION_BALANCE, balance);
-    }
-
     public int getBankLevel() {
         return getInt(EXPANSION_BANK_LEVEL);
     }
 
-    public void setBankLevel(int level) {
-        setValue(EXPANSION_BANK_LEVEL, level);
-        setBlocksLevel(getBlocksLevel() + level);
+    public void subBlocksLevel(int levels) {
+        if (levels > 0) {
+            setBlocksLevel(Math.max(0, getBlocksLevel() - levels));
+            setBankLevel(Math.max(0, getBankLevel() - levels));
+        }
+    }
+
+    public void addBankLevel(int levels) {
+        if (levels > 0) {
+            setBankLevel(getBankLevel() + levels);
+            setBlocksLevel(getBlocksLevel() + levels);
+        }
+    }
+
+    public void resetBank() {
+        setBankLevel(0);
+        setBalance(0);
     }
 
     public int getBlocksLevel() {
         return getInt(EXPANSION_BLOCKS_LEVEL);
-    }
-
-    public void setBlocksLevel(int level) {
-        setValue(EXPANSION_BLOCKS_LEVEL, level);
     }
 
     public int getExpansionPrice() throws InvalidFormulaException {
@@ -67,14 +73,12 @@ public class EconomyConfig extends AbstractConfig {
             setBalance(bankMoney);
             return;
         }
-        int bankLevel = getBankLevel();
         while (price <= bankMoney) {
             if (price <= 0) {
                 throw new InvalidFormulaException("Expansion price wasn't positive.");
             }
-            bankLevel++;
             bankMoney -= price;
-            setBankLevel(bankLevel);
+            addBankLevel(1);
             price = getExpansionPrice();
         }
         setBalance(bankMoney);
@@ -84,5 +88,17 @@ public class EconomyConfig extends AbstractConfig {
         Map<String, Double> worldSizesMap = new HashMap<>();
         worlds.forEach(worldName -> worldSizesMap.put(worldName, 2.0 * getBlocksLevel()));
         return worldSizesMap;
+    }
+
+    private void setBalance(int balance) {
+        setValue(EXPANSION_BALANCE, balance);
+    }
+
+    private void setBankLevel(int level) {
+        setValue(EXPANSION_BANK_LEVEL, level);
+    }
+
+    private void setBlocksLevel(int level) {
+        setValue(EXPANSION_BLOCKS_LEVEL, level);
     }
 }

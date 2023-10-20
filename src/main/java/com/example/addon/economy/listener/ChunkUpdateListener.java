@@ -27,9 +27,7 @@ public class ChunkUpdateListener implements Listener {
         if (addedBlocks <= 0) {
             return;
         }
-        final int bankLevel = economyConfig.getBankLevel();
-        final int updatedBankLevel = Math.max(0, bankLevel - addedBlocks);
-        economyConfig.setBankLevel(updatedBankLevel);
+        economyConfig.subBlocksLevel(addedBlocks);
         try {
             economyConfig.calculateExpansive();
         } catch (InvalidFormulaException e) {

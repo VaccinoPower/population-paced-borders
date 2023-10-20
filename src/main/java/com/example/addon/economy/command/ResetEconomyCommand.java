@@ -15,18 +15,11 @@ public class ResetEconomyCommand extends PPBCommand {
         this.description = "View balance for expansion.";
         this.usageMessage = "Usage:\n/ppb balreset";
         this.economyConfig = configManager.getEconomyConfig();
+        addArgsRule(args -> args.length == 0, super.getUsage());
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String command, @NotNull String[] args) {
-        if (!isCommand(command)) {
-            return false;
-        }
-        if (!isAvailable(sender, args, 0)) {
-            return true;
-        }
-        economyConfig.setBankLevel(0);
-        economyConfig.setBalance(0);
-        return true;
+    protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
+        economyConfig.resetBank();
     }
 }
