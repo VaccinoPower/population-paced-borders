@@ -1,8 +1,9 @@
 package com.example.addon.maxonline.listener;
 
-import com.example.config.ConfigManager;
-import com.example.event.MaxOnlineChangeEvent;
-import com.example.config.ServerLimitsConfig;
+import com.example.addon.maxonline.MaxOnlineBorderExpander;
+import com.example.event.BorderChangeEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -10,20 +11,23 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerJoinListener implements Listener {
-    private final ServerLimitsConfig serverLimitsConfig;
+    private final MaxOnlineBorderExpander borderExpander;
 
-    public PlayerJoinListener(ConfigManager configManager) {
-        this.serverLimitsConfig = configManager.getServerLimitsConfig();
+    public PlayerJoinListener(MaxOnlineBorderExpander borderExpander) {
+        this.borderExpander = borderExpander;
     }
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         final int online = getServer().getOnlinePlayers().size();
-        if (online <= serverLimitsConfig.getMaxOnline()) {
-            return;
-        }
-        serverLimitsConfig.setMaxOnline(online);
-        getServer().getPluginManager().callEvent(new MaxOnlineChangeEvent(online));
+        double prevBlocks = getBorderRadius("world");
+        borderExpander.expand(online);
+        double curBlocks = getBorderRadius("world");
+        Bukkit.getServer().getPluginManager().callEvent(new BorderChangeEvent((int)((curBlocks - prevBlocks)/2)));
     }
 
+    private static double getBorderRadius(String worldName) {
+        World world = Bukkit.getServer().getWorld(worldName);
+        return world != null ? world.getWorldBorder().getSize() : 0;
+    }
 }

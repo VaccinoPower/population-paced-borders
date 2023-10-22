@@ -1,7 +1,5 @@
 package com.example.config;
 
-import com.example.exeption.InvalidFormulaException;
-import com.example.util.ExpressionCalculator;
 import com.example.util.WorldBorderUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import java.util.Collections;
@@ -28,20 +26,6 @@ public class WorldConfig extends AbstractConfig {
         return worldSection == null ? Collections.emptySet() : worldSection.getKeys(false);
     }
 
-    public Map<String, Double> getWorldSizesMap(int newMaxOnline) {
-        HashMap<String, Double> worldSizesMap = new HashMap<>();
-        for (String world : getWorlds()) {
-            try {
-                String formula = getFormula(world) + "*" + (2 * getChunkSize());
-                double borderSize = ExpressionCalculator.evaluateExpression(formula, newMaxOnline);
-                worldSizesMap.put(world, borderSize);
-            } catch (InvalidFormulaException e) {
-                getLogger().warning(e::getMessage);
-            }
-        }
-        return worldSizesMap.size() != 0 ? worldSizesMap : Collections.emptyMap();
-    }
-
     public void resizeWorlds(String extraKey, Map<String, Double> worldSizesMap) {
         Map<String, Double> sumSizes = new HashMap<>();
         Map<String, Double> initBorder = new HashMap<>();
@@ -52,7 +36,7 @@ public class WorldConfig extends AbstractConfig {
         worldBorderUtil.updateWorlds(sumSizes);
     }
 
-    private int getChunkSize() {
+    public int getChunkSize() {
         return getInt(CHUNK_SIZE);
     }
 
@@ -68,7 +52,7 @@ public class WorldConfig extends AbstractConfig {
         return getConfigurationSection(WORLDS);
     }
 
-    private String getFormula(String worldName) {
+    public String getFormula(String worldName) {
         ConfigurationSection worldSection = getWorldsSection();
         return "(" + worldSection.getString(worldName + "." + BARRIER_FORMULA.key, getDefaultFormula()) + ")";
     }

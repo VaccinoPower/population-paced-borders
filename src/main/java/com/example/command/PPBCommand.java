@@ -31,7 +31,7 @@ public abstract class PPBCommand extends Command {
 
     protected abstract void action(@NotNull CommandSender sender, @NotNull String[] args);
 
-    public boolean isCommand(String commandName) {
+    protected boolean isCommand(String commandName) {
         return commandName.equals(getName()) || getAliases().contains(commandName);
     }
 
@@ -47,7 +47,7 @@ public abstract class PPBCommand extends Command {
         validator.addRule(validationFunction, errorMessage);
     }
 
-    public boolean validate(CommandSender sender, String[] args) {
+    private boolean validate(CommandSender sender, String[] args) {
         if (!validator.validate(sender, args)) {
             String errorMessage = validator.getErrorMessage();
             if (!(errorMessage == null || "".equals(errorMessage))) {

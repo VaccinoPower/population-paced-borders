@@ -22,9 +22,9 @@ public class PopulationPacedBordersPluginTest {
     private static final int MAX_PLAYERS = 64;
     private static final int INITIAL_BORDER_SIZE = 1;
 
-    private final String[] WORLD_NAMES  = {"world", "world_nether", "world_the_end"};
-    private ServerMock server;
-    private JavaPlugin plugin;
+    private static final String[] WORLD_NAMES  = {"world", "world_nether", "world_the_end"};
+    private ServerMock server = null;
+    private JavaPlugin plugin = null;
 
     @BeforeEach
     public void setUp() {
@@ -70,7 +70,7 @@ public class PopulationPacedBordersPluginTest {
         }
     }
 
-    private static Stream<Arguments> playerCountProvider() {
+    public static Stream<Arguments> playerCountProvider() {
         return Stream.of(
                 Arguments.of(1, CHUNK_SIZE),
                 Arguments.of(MAX_PLAYERS / 2, MAX_PLAYERS / 2 * CHUNK_SIZE),
@@ -104,7 +104,7 @@ public class PopulationPacedBordersPluginTest {
         }
     }
 
-    private static Stream<Arguments> formulaProvider() {
+    public static Stream<Arguments> formulaProvider() {
         final int PLAYERS = MAX_PLAYERS / 16;
         return Stream.of(
                 Arguments.of("1", PLAYERS, 1),
@@ -173,7 +173,7 @@ public class PopulationPacedBordersPluginTest {
         }
     }
 
-    private static Stream<Arguments> chunkSizeProvider() {
+    public static Stream<Arguments> chunkSizeProvider() {
         String formula = "2 ^ x";
         final int PLAYERS = MAX_PLAYERS / 16;
         return Stream.of(
@@ -196,7 +196,7 @@ public class PopulationPacedBordersPluginTest {
         }
     }
 
-    private static Stream<Arguments> invalidFormulaProvider() {
+    public static Stream<Arguments> invalidFormulaProvider() {
         return Stream.of(
                 Arguments.of("x * 2 +"),
                 Arguments.of(""),

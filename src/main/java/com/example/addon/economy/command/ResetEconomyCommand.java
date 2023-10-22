@@ -1,25 +1,24 @@
 package com.example.addon.economy.command;
 
-import com.example.addon.economy.EconomyConfig;
+import com.example.addon.economy.EconomyBorderExpander;
 import com.example.command.PPBCommand;
-import com.example.config.ConfigManager;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class ResetEconomyCommand extends PPBCommand {
-    private final EconomyConfig economyConfig;
+    private final EconomyBorderExpander borderExpander;
 
-    public ResetEconomyCommand(ConfigManager configManager) {
+    public ResetEconomyCommand(EconomyBorderExpander borderExpander) {
         super("balreset");
         super.setPermission("ppb.command.balreset");
         this.description = "View balance for expansion.";
         this.usageMessage = "Usage:\n/ppb balreset";
-        this.economyConfig = configManager.getEconomyConfig();
+        this.borderExpander = borderExpander;
         addArgsRule(args -> args.length == 0, super.getUsage());
     }
 
     @Override
     protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
-        economyConfig.resetBank();
+        borderExpander.resetBank();
     }
 }

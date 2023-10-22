@@ -29,8 +29,8 @@ public class PopulationPacedBordersPlugin extends JavaPlugin {
         PluginCommand ppbCommand = Objects.requireNonNull(getCommand("ppb"));
         ppbCommand.setExecutor(commandExecutorHandler);
         registerAddons(Arrays.asList(
-                new MaxOnlineAddon(configManager, "maxOnline"),
-                new EconomyAddon(configManager, "economy"),
+                new MaxOnlineAddon(configManager),
+                new EconomyAddon(configManager),
                 new MotdAddon(configManager))
         );
         registerCommand(new ReloadCommand(configManager));

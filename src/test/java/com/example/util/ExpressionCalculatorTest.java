@@ -21,7 +21,7 @@ public class ExpressionCalculatorTest {
         }, "Unexpected exception.");
     }
 
-    private static Stream<Arguments> formulaProvider() {
+    public static Stream<Arguments> formulaProvider() {
         final int x = 10;
         return Stream.of(
                 Arguments.of("1", x, 1),
@@ -53,7 +53,7 @@ public class ExpressionCalculatorTest {
                 "Expression must be invalid, but no exception is thrown");
     }
 
-    private static Stream<Arguments> invalidFormulaProvider() {
+    public static Stream<Arguments> invalidFormulaProvider() {
         return Stream.of(
                 Arguments.of("invalid"),
                 Arguments.of("x * 2 +"),

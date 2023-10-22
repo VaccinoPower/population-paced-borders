@@ -18,17 +18,17 @@ import java.util.stream.Stream;
 
 public class WorldBorderUtilTest {
     private static final int INITIAL_WORLD_SIZE = 2;
-    Map<String, Double> worldSizesMap = new HashMap<>();;
-    Map<String, World> worlds = new HashMap<>();
+    private static final Logger LOGGER = Logger.getLogger("getLogger");
+    private Map<String, Double> worldSizesMap = new HashMap<>();
+    private Map<String, World> worlds = new HashMap<>();
 
-    Logger logger = Logger.getLogger("getLogger");
 
-    WorldBorderUtil worldBorderUtil;
+    private  WorldBorderUtil worldBorderUtil = null;
 
     @BeforeEach
     public void setUp() {
         MockBukkit.mock();
-        worldBorderUtil = new WorldBorderUtil(() -> logger);
+        worldBorderUtil = new WorldBorderUtil(() -> LOGGER);
     }
 
     @AfterEach
@@ -40,7 +40,7 @@ public class WorldBorderUtilTest {
     @MethodSource("updateWorldSizesProvider")
     @DisplayName("Test ")
     public void testUpdateWorldSizes(String[] worldNames) {
-        int x = 10;
+        double x = 10;
         double formula = (x+1)*16;
         for (String worldName : worldNames) {
             WorldMock world = new WorldMock();
@@ -56,7 +56,7 @@ public class WorldBorderUtilTest {
         }
     }
 
-    private static Stream<Arguments> updateWorldSizesProvider() {
+    public static Stream<Arguments> updateWorldSizesProvider() {
         return Stream.of(
                 Arguments.of((Object) new String[0]),
                 Arguments.of((Object) new String[]{"worldB", "worldC", "worldA"})
@@ -66,7 +66,7 @@ public class WorldBorderUtilTest {
     @Test
     @DisplayName("Test ")
     public void testUpdateWorldSizesWithNotExistsWorld() {
-        int x = 10;
+        double x = 10;
         double formula = (x+1)*16;
         String[] worldNames = {"worldB", "worldC", "worldA"};
         for (String worldName : worldNames) {

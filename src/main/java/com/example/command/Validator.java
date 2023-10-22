@@ -1,6 +1,5 @@
 package com.example.command;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;

@@ -25,10 +25,9 @@ public class ServerListPingListener implements Listener {
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
-        if (!motdConfig.shouldChangeMotd()) {
-            return;
+        if (motdConfig.shouldChangeMotd()) {
+            event.motd(getMotdMessage());
         }
-        event.motd(getMotdMessage());
     }
 
     private Component getMotdMessage() {
