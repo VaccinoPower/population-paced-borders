@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 public abstract class AbstractConfig {
@@ -36,24 +36,39 @@ public abstract class AbstractConfig {
         save();
     }
 
+    protected final void setValue(String path, Object value) {
+        cache.put(path, value);
+        save();
+    }
+
+    protected final int getInt(String section, ConfigKey targetConfigKey) {
+        String path = section + "." + targetConfigKey.key;
+        return getValue(path, get()::getInt, Integer.valueOf(targetConfigKey.defaultValue), Integer.class);
+    }
+
     protected final boolean getBoolean(ConfigKey configKey) {
-        return getValue(configKey, () -> get().getBoolean(configKey.key), Boolean.valueOf(configKey.defaultValue), Boolean.class);
+        return getValue(configKey, get()::getBoolean, Boolean.valueOf(configKey.defaultValue), Boolean.class);
+    }
+
+    protected final String getString(String section, ConfigKey targetConfigKey) {
+        String path = section + "." + targetConfigKey.key;
+        return getValue(path,  get()::getString, targetConfigKey.defaultValue, String.class);
     }
 
     protected final String getString(ConfigKey configKey) {
-        return getValue(configKey, () -> get().getString(configKey.key), configKey.defaultValue, String.class);
+        return getValue(configKey, get()::getString, configKey.defaultValue, String.class);
     }
 
     protected final int getInt(ConfigKey configKey) {
-        return getValue(configKey, () -> get().getInt(configKey.key), Integer.valueOf(configKey.defaultValue), Integer.class);
+        return getValue(configKey, get()::getInt, Integer.valueOf(configKey.defaultValue), Integer.class);
     }
 
     protected final double getDouble(ConfigKey configKey) {
-        return getValue(configKey, () -> get().getDouble(configKey.key), Double.valueOf(configKey.defaultValue), Double.class);
+        return getValue(configKey, get()::getDouble, Double.valueOf(configKey.defaultValue), Double.class);
     }
 
     protected final ConfigurationSection getConfigurationSection(ConfigKey configKey) {
-        return getValue(configKey, () -> get().getConfigurationSection(configKey.key), null, ConfigurationSection.class);
+        return getValue(configKey, get()::getConfigurationSection, null, ConfigurationSection.class);
     }
 
     private FileConfiguration get() {
@@ -64,11 +79,12 @@ public abstract class AbstractConfig {
         cache.clear();
     }
 
-    private <T> T getValue(ConfigKey configKey, Supplier<Object> valueSupplier, T def, Class<T> clazz) {
-        Object value = cache.computeIfAbsent(configKey.key, v -> valueSupplier.get());
-        if (clazz.isInstance(value)) {
-            return clazz.cast(value);
-        }
-        return clazz.isInstance(configKey.defaultValue) ? clazz.cast(configKey.defaultValue) : def;
+    private <T> T getValue(ConfigKey configKey, Function<String, Object> getFromConfig, T def, Class<T> clazz) {
+        return getValue(configKey.key, getFromConfig, def, clazz);
+    }
+
+    private <T> T getValue(String path, Function<String, Object> getFromConfig, T def, Class<T> clazz) {
+        Object value = cache.computeIfAbsent(path, getFromConfig);
+        return clazz.isInstance(value) ? clazz.cast(value) : def;
     }
 }

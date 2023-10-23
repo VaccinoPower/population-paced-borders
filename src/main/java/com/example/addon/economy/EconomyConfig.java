@@ -2,11 +2,9 @@ package com.example.addon.economy;
 
 import com.example.config.AbstractConfig;
 import com.example.config.Configurator;
+import java.util.UUID;
 
-import static com.example.config.ConfigKey.EXPANSION_BALANCE;
-import static com.example.config.ConfigKey.EXPANSION_BANK_LEVEL;
-import static com.example.config.ConfigKey.EXPANSION_BLOCKS_LEVEL;
-import static com.example.config.ConfigKey.EXPANSION_FORMULA;
+import static com.example.config.ConfigKey.*;
 
 public class EconomyConfig extends AbstractConfig {
     public EconomyConfig(Configurator configurator) {
@@ -27,6 +25,15 @@ public class EconomyConfig extends AbstractConfig {
 
     public int getBlocksLevel() {
         return getInt(EXPANSION_BLOCKS_LEVEL);
+    }
+
+    public int getLevelLowering(UUID uuid) {
+        return getInt(PLAYERS.key + "." + uuid.toString(), LEVEL_LOWERING);
+    }
+
+    public void setLevelLowering(UUID uuid, String nickname, int level) {
+        setValue(PLAYERS.key + "." + uuid + "." + LEVEL_LOWERING.key, level);
+        setValue(PLAYERS.key + "." + uuid + "." + NICKNAME.key, nickname);
     }
 
     public void setBalance(int balance) {
