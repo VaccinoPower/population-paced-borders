@@ -19,8 +19,11 @@ public class EconomyBorderExpander {
     }
 
     public void expand(BigDecimal payment) throws InvalidFormulaException {
+        final int prevBlocksLevel = economyConfig.getBlocksLevel();
         calculateExpansive(payment.intValue());
-        expand();
+        if (prevBlocksLevel != economyConfig.getBlocksLevel()) {
+            expand();
+        }
     }
 
     public void expand(int addedBlocks) {
