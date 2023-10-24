@@ -9,11 +9,13 @@ public enum ConfigKey {
     MOTD_WORLD("motd_world", "world"),
     WORLDS("worlds", null),
     BARRIER_FORMULA("barrier_formula", "x"),
-    START_PRICE("start_price", "1000"),
     EXPANSION_BALANCE("expansion_balance", "0"),
     EXPANSION_FORMULA("expansion_formula", "x"),
     EXPANSION_BANK_LEVEL("bank_level", "0"),
     EXPANSION_BLOCKS_LEVEL("blocks_level", "0"),
+    PLAYERS("players", null),
+    NICKNAME("nickname", "???"),
+    LEVEL_LOWERING("lowering_level", "0"),
     INITIAL_BARRIER_SIZE("initial_barrier_size", "0");
 
     public final String key;

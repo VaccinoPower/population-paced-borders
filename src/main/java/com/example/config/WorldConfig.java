@@ -44,16 +44,11 @@ public class WorldConfig extends AbstractConfig {
         return getDouble(INITIAL_BARRIER_SIZE);
     }
 
-    private String getDefaultFormula() {
-        return getString(BARRIER_FORMULA);
-    }
-
     private ConfigurationSection getWorldsSection() {
         return getConfigurationSection(WORLDS);
     }
 
     public String getFormula(String worldName) {
-        ConfigurationSection worldSection = getWorldsSection();
-        return "(" + worldSection.getString(worldName + "." + BARRIER_FORMULA.key, getDefaultFormula()) + ")";
+        return "(" + getString(WORLDS.key + "." + worldName, BARRIER_FORMULA) + ")";
     }
 }
