@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -18,7 +17,7 @@ public abstract class PPBCommand extends Command {
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String command, @NotNull String[] args) {
+    public final boolean execute(@NotNull CommandSender sender, @NotNull String command, @NotNull String[] args) {
         if (!isCommand(command)) {
             return false;
         }
@@ -31,7 +30,7 @@ public abstract class PPBCommand extends Command {
 
     protected abstract void action(@NotNull CommandSender sender, @NotNull String[] args);
 
-    protected boolean isCommand(String commandName) {
+    protected final boolean isCommand(String commandName) {
         return commandName.equals(getName()) || getAliases().contains(commandName);
     }
 

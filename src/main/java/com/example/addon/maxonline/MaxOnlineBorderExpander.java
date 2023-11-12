@@ -1,6 +1,5 @@
 package com.example.addon.maxonline;
 
-import com.example.config.ServerLimitsConfig;
 import com.example.config.WorldConfig;
 import com.example.exeption.InvalidFormulaException;
 import com.example.util.ExpressionCalculator;
@@ -11,17 +10,15 @@ import java.util.logging.Logger;
 
 public class MaxOnlineBorderExpander {
     private static final String EXTRA_BLOCKS_KEY = "maxOnline";
-    private final ServerLimitsConfig serverLimitsConfig;
     private final WorldConfig worldConfig;
 
-    public MaxOnlineBorderExpander(ServerLimitsConfig serverLimitsConfig, WorldConfig worldConfig) {
-        this.serverLimitsConfig = serverLimitsConfig;
+    public MaxOnlineBorderExpander(WorldConfig worldConfig) {
         this.worldConfig = worldConfig;
     }
 
     public void expand(int online) {
-        if (online > serverLimitsConfig.getMaxOnline()) {
-            serverLimitsConfig.setMaxOnline(online);
+        if (online > worldConfig.getMaxOnline()) {
+            worldConfig.setMaxOnline(online);
             expand();
         }
     }
@@ -32,7 +29,7 @@ public class MaxOnlineBorderExpander {
     }
 
     private Map<String, Double> getWorldSizesMap() {
-        int maxOnline = serverLimitsConfig.getMaxOnline();
+        int maxOnline = worldConfig.getMaxOnline();
         HashMap<String, Double> worldSizesMap = new HashMap<>();
         for (String world : worldConfig.getWorlds()) {
             try {

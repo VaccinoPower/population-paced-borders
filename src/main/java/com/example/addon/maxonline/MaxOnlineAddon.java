@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class MaxOnlineAddon extends PluginAddon {
     public MaxOnlineAddon(ConfigManager configManager) {
-        MaxOnlineBorderExpander borderExpander = new MaxOnlineBorderExpander(configManager.getServerLimitsConfig(), configManager.getWorldConfig());
+            MaxOnlineBorderExpander borderExpander = new MaxOnlineBorderExpander(configManager.getWorldConfig());
         this.listeners = Arrays.asList(
             new InitializeMaxOnlineListener(borderExpander),
             new PlayerJoinListener(borderExpander)

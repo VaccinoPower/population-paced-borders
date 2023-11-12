@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.example.config.ConfigKey.BARRIER_FORMULA;
-import static com.example.config.ConfigKey.CHUNK_SIZE;
-import static com.example.config.ConfigKey.INITIAL_BARRIER_SIZE;
-import static com.example.config.ConfigKey.WORLDS;
+import static com.example.config.ConfigKey.*;
+import static com.example.config.ConfigKey.MAX_ONLINE;
 
 public class WorldConfig extends AbstractConfig {
     private final Map<String, Map<String, Double>> extraBlocks = new HashMap<>();
@@ -50,5 +48,13 @@ public class WorldConfig extends AbstractConfig {
 
     public String getFormula(String worldName) {
         return "(" + getString(WORLDS.key + "." + worldName, BARRIER_FORMULA) + ")";
+    }
+
+    public int getMaxOnline() {
+        return getInt(MAX_ONLINE);
+    }
+
+    public void setMaxOnline(int online) {
+        setValue(MAX_ONLINE, online);
     }
 }
