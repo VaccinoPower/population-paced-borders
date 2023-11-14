@@ -63,6 +63,11 @@ public abstract class AbstractConfig {
         return getValue(configKey, get()::getInt, Integer.valueOf(configKey.defaultValue), Integer.class);
     }
 
+    protected final double getDouble(String section, ConfigKey targetConfigKey) {
+        String path = section + "." + targetConfigKey.key;
+        return getValue(path,  get()::getDouble, Double.valueOf(targetConfigKey.defaultValue), Double.class);
+    }
+
     protected final double getDouble(ConfigKey configKey) {
         return getValue(configKey, get()::getDouble, Double.valueOf(configKey.defaultValue), Double.class);
     }

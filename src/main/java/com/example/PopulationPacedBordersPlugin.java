@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.addon.PluginAddon;
 import com.example.addon.economy.EconomyAddon;
+import com.example.addon.extender.ExtenderAddon;
 import com.example.addon.maxonline.MaxOnlineAddon;
 import com.example.addon.motd.MotdAddon;
 import com.example.command.CommandExecutorHandler;
@@ -30,7 +31,8 @@ public class PopulationPacedBordersPlugin extends JavaPlugin {
         registerAddons(Arrays.asList(
                 new MaxOnlineAddon(configManager),
                 new EconomyAddon(configManager),
-                new MotdAddon(configManager))
+                new MotdAddon(configManager),
+                new ExtenderAddon(configManager))
         );
         registerCommand(new ReloadCommand(configManager));
         Bukkit.getPluginManager().callEvent(new InitializeEvent());

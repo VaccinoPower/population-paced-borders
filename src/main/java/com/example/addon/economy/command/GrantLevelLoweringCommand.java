@@ -1,6 +1,6 @@
 package com.example.addon.economy.command;
 
-import com.example.addon.economy.EconomyBorderExpander;
+import com.example.addon.economy.EconomyConfig;
 import com.example.command.PPBCommand;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 
 public class GrantLevelLoweringCommand extends PPBCommand {
-    private final EconomyBorderExpander borderExpander;
+    private final EconomyConfig config;
 
-    public GrantLevelLoweringCommand(EconomyBorderExpander borderExpander) {
+    public GrantLevelLoweringCommand(EconomyConfig config) {
         super("permission");
         super.setPermission("ppb.command.permission.add.bank-down");
         super.setAliases(Collections.singletonList("perm"));
@@ -21,7 +21,7 @@ public class GrantLevelLoweringCommand extends PPBCommand {
         this.usageMessage = "Usage:\n" +
                 "/ppb permission add bank_down <nickname> <amount>\n" +
                 "/ppb perm add bank_down <nickname> <amount>";
-        this.borderExpander = borderExpander;
+        this.config = config;
         addArgsRule(args -> args.length == 4, super.getUsage());
         addArgsRule(args -> "add".equals(args[0]), super.getUsage());
         addArgsRule(args -> "bank_down".equals(args[1]), super.getUsage());
@@ -33,7 +33,7 @@ public class GrantLevelLoweringCommand extends PPBCommand {
     protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
         Player player = getPlayer(args);
         if (player != null) {
-            borderExpander.addLowering(player, getLevel(args));
+            config.addLowering(player, getLevel(args));
         }
     }
 

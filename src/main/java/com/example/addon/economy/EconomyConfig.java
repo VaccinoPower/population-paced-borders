@@ -2,6 +2,10 @@ package com.example.addon.economy;
 
 import com.example.config.AbstractConfig;
 import com.example.config.Configurator;
+import com.example.exeption.InvalidFormulaException;
+import com.example.util.ExpressionCalculator;
+import org.bukkit.entity.Player;
+
 import java.util.UUID;
 
 import static com.example.config.ConfigKey.*;
@@ -46,5 +50,31 @@ public class EconomyConfig extends AbstractConfig {
 
     public void setBlocksLevel(int level) {
         setValue(EXPANSION_BLOCKS_LEVEL, level);
+    }
+
+    public void addLowering(Player player, int level) {
+        UUID uuid = player.getUniqueId();
+        level += getLevelLowering(uuid);
+        setLevelLowering(uuid, player.getName(), level);
+    }
+
+    public void subtractBankLevel(int level) {
+        setBankLevel(Math.max(0, getBankLevel() - level));
+    }
+
+    public int getExpansionPrice() throws InvalidFormulaException {
+        return (int) ExpressionCalculator.evaluateExpression(getExpansionFormula(), getBankLevel());
+    }
+
+    public int getExpansionPrice(int bankLevel) throws InvalidFormulaException {
+        return (int) ExpressionCalculator.evaluateExpression(getExpansionFormula(), bankLevel);
+    }
+
+    public void addBlocksLevel(int level) {
+        setBlocksLevel(Math.max(0, getBlocksLevel() + level));
+    }
+
+    public void addBankLevel(int level) {
+        setBankLevel(Math.max(0, getBankLevel() + level));
     }
 }

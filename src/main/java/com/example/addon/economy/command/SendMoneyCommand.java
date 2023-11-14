@@ -2,6 +2,7 @@ package com.example.addon.economy.command;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import com.example.addon.economy.Bank;
 import com.example.addon.economy.EconomyBorderExpander;
 import com.example.command.PPBCommand;
 import com.example.exeption.InvalidFormulaException;
@@ -15,13 +16,15 @@ import java.math.BigDecimal;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class SendMoneyCommand extends PPBCommand {
+    private final Bank bank;
     private final EconomyBorderExpander borderExpander;
 
-    public SendMoneyCommand(EconomyBorderExpander borderExpander) {
+    public SendMoneyCommand(Bank bank, EconomyBorderExpander borderExpander) {
         super("send");
         super.setPermission("ppb.command.send");
         this.description = "Send money for expansion.";
         this.usageMessage = "Usage: /ppb send <amount>";
+        this.bank = bank;
         this.borderExpander = borderExpander;
         addArgsRule(args -> args.length == 1, super.getUsage());
         addArgsRule(args -> NumberUtils.isCreatable(args[0]), super.getUsage());
@@ -34,7 +37,8 @@ public class SendMoneyCommand extends PPBCommand {
         final BigDecimal money = getMoney(args[0]);
         final User user = getUser(sender);
         try {
-            borderExpander.expand(money);
+            bank.calculateExpansive(money.intValue());
+            borderExpander.expand();
             user.takeMoney(money);
         } catch (InvalidFormulaException e) {
             sender.sendMessage(Component.text("[ERROR] Invalid formula. Please contact an admin.", RED));
