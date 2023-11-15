@@ -3,7 +3,10 @@ package com.example;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
-import com.earth2me.essentials.Essentials;
+import be.seeseemelk.mockbukkit.entity.BatMock;
+import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +18,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public class PopulationPacedBordersPluginTest {

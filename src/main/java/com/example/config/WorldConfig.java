@@ -1,24 +1,29 @@
 package com.example.config;
 
-import com.example.util.WorldBorderUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.example.config.ConfigKey.BARRIER_FORMULA;
-import static com.example.config.ConfigKey.CHUNK_SIZE;
-import static com.example.config.ConfigKey.INITIAL_BARRIER_SIZE;
-import static com.example.config.ConfigKey.WORLDS;
+import static com.example.config.ConfigKey.*;
+import static com.example.config.ConfigKey.MAX_ONLINE;
 
 public class WorldConfig extends AbstractConfig {
     private final Map<String, Map<String, Double>> extraBlocks = new HashMap<>();
-    private final WorldBorderUtil worldBorderUtil;
 
     public WorldConfig(Configurator configurator) {
         super(configurator);
-        this.worldBorderUtil = new WorldBorderUtil(this::getLogger);
+    }
+
+    public void setMaxOnline(int online) {
+        setValue(MAX_ONLINE, online);
+    }
+
+    private double getInitBorder() {
+        return getDouble(INITIAL_BARRIER_SIZE);
     }
 
     public Set<String> getWorlds() {
@@ -33,22 +38,32 @@ public class WorldConfig extends AbstractConfig {
         extraBlocks.put(INITIAL_BARRIER_SIZE.key, initBorder);
         extraBlocks.put(extraKey, worldSizesMap);
         extraBlocks.values().forEach(expansive -> expansive.forEach((key, value) -> sumSizes.merge(key, value, Double::sum)));
-        worldBorderUtil.updateWorlds(sumSizes);
+        sumSizes.forEach(this::updateWorld);
     }
-
     public int getChunkSize() {
         return getInt(CHUNK_SIZE);
     }
 
-    private double getInitBorder() {
-        return getDouble(INITIAL_BARRIER_SIZE);
+    public String getFormula(String worldName) {
+        return "(" + getString(WORLDS.key + "." + worldName, BARRIER_FORMULA) + ")";
     }
 
+    public int getMaxOnline() {
+        return getInt(MAX_ONLINE);
+    }
     private ConfigurationSection getWorldsSection() {
         return getConfigurationSection(WORLDS);
     }
 
-    public String getFormula(String worldName) {
-        return "(" + getString(WORLDS.key + "." + worldName, BARRIER_FORMULA) + ")";
+    private void updateWorld(String worldName, Double size) {
+        World world = Bukkit.getServer().getWorld(worldName);
+        if (world == null) {
+            String message = "An error occurred while working with WorldBorder. World name \"" + worldName + "\" doesn't exist.";
+            getLogger().warning(message);
+            return;
+        }
+        if (Math.abs(world.getWorldBorder().getSize() - size) > 1e-6) {
+            world.getWorldBorder().setSize(size);
+        }
     }
 }

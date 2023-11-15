@@ -14,16 +14,17 @@ import java.util.Arrays;
 public class EconomyAddon extends PluginAddon {
     public EconomyAddon(ConfigManager configManager) {
         EconomyBorderExpander borderExpander = new EconomyBorderExpander(configManager.getEconomyConfig(), configManager.getWorldConfig());
+        Bank bank = new Bank(configManager.getEconomyConfig());
         this.commands = Arrays.asList(
-                new BalanceCommand(borderExpander),
-                new SendMoneyCommand(borderExpander),
-                new ResetEconomyCommand(borderExpander),
-                new LowerBankLevelCommand(borderExpander),
-                new GrantLevelLoweringCommand(borderExpander)
+                new BalanceCommand(bank),
+                new SendMoneyCommand(bank, borderExpander),
+                new ResetEconomyCommand(bank),
+                new LowerBankLevelCommand(bank, borderExpander),
+                new GrantLevelLoweringCommand(configManager.getEconomyConfig())
         );
         this.listeners = Arrays.asList(
                 new InitializeEconomyListener(borderExpander),
-                new ChunkUpdateListener(borderExpander)
+                new ChunkUpdateListener(bank, borderExpander)
         );
     }
 }

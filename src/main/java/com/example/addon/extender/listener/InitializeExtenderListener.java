@@ -1,14 +1,14 @@
-package com.example.addon.economy.listener;
+package com.example.addon.extender.listener;
 
 import com.example.addon.BorderExpander;
 import com.example.event.InitializeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class InitializeEconomyListener implements Listener {
+public class InitializeExtenderListener implements Listener {
     private final BorderExpander borderExpander;
 
-    public InitializeEconomyListener(BorderExpander borderExpander) {
+    public InitializeExtenderListener(BorderExpander borderExpander) {
         this.borderExpander = borderExpander;
     }
 
