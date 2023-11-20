@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class GiveExtenderCommand extends PPBCommand {
     private final ExtenderConfig config;
@@ -33,6 +35,14 @@ public class GiveExtenderCommand extends PPBCommand {
         ItemStack extenders = new ExtenderStack(config.getMaterial(), getLevels(args), getExtendersAmount(args));
         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(extenders);
         remainingItems.values().forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
+        sendOk(sender, MessageFormat.format("{0} extenders of level {1} given out", getExtendersAmount(args), getLevels(args)));
+        log(sender, args);
+    }
+
+    private void log(CommandSender sender, String[] args) {
+        String logPattern = "{0} gave himself {1} extenders of level {2}";
+        Object[] logParams = {sender.getName(), getExtendersAmount(args), getLevels(args)};
+        config.getLogger().log(Level.INFO, logPattern, logParams);
     }
 
     private static int getLevels(String[] args) {

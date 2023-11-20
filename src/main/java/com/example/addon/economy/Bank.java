@@ -3,7 +3,7 @@ package com.example.addon.economy;
 import com.example.exeption.InvalidFormulaException;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import java.util.logging.Logger;
 
 public class Bank {
     private final EconomyConfig config;
@@ -13,13 +13,27 @@ public class Bank {
     }
 
     public String aboutBalance() {
-        String expansionPrice;
         try {
-            expansionPrice = String.valueOf(config.getExpansionPrice());
+            return getBalanceMessage(String.valueOf(config.getExpansionPrice()));
         } catch (InvalidFormulaException e) {
-            expansionPrice = "???";
+            return getBalanceMessage( "???");
         }
-        return String.format("Bank level: %d%n$%d / $%s for expansion.", config.getBankLevel(), config.getBalance(), expansionPrice);
+    }
+
+    public int getLevel() {
+        return config.getBankLevel();
+    }
+
+    public int getBalance() {
+        return config.getBalance();
+    }
+
+    public int getLevelLowering(Player player) {
+        return config.getLevelLowering(player.getUniqueId());
+    }
+
+    public void addLowering(Player player, int level) {
+        config.addLowering(player.getUniqueId(), player.getName(), level);
     }
 
     public void levelDown(int level) {
@@ -27,16 +41,14 @@ public class Bank {
     }
 
     public void levelDown(Player player, int level) {
-        UUID uuid = player.getUniqueId();
-        int playerLevels = config.getLevelLowering(uuid);
-        if (playerLevels >= level && level > 0) {
-            int bankLevel = config.getBankLevel();
-            int newBankLevel = Math.max(0, bankLevel - level);
-            int newLevelLowering = playerLevels - Math.min(level, bankLevel);
-            String nickname = player.getName();
-            config.setBankLevel(newBankLevel);
-            config.setLevelLowering(uuid, nickname, newLevelLowering);
+        int playerLevels = getLevelLowering(player);
+        if (playerLevels < level || level <= 0) {
+            return;
         }
+        int bankLevel = getLevel();
+        int newLevelLowering = playerLevels - Math.min(level, bankLevel);
+        config.setBankLevel(Math.max(0, bankLevel - level));
+        config.setLevelLowering(player.getUniqueId(), player.getName(), newLevelLowering);
     }
 
     public void reset() {
@@ -49,13 +61,13 @@ public class Bank {
     }
 
     public void calculateExpansive(int money) throws InvalidFormulaException {
-        int bankMoney = config.getBalance() + money;
+        int bankMoney = getBalance() + money;
         int price = config.getExpansionPrice();
         if (price > bankMoney){
             config.setBalance(bankMoney);
             return;
         }
-        int prevBankLevel = config.getBankLevel();
+        int prevBankLevel = getLevel();
         int bankLevel = prevBankLevel;
         while (price <= bankMoney) {
             if (price <= 0) {
@@ -74,8 +86,16 @@ public class Bank {
         addBankLevel(-level);
     }
 
+    public Logger getLogger() {
+        return config.getLogger();
+    }
+
     private void addBankLevel(int levels) {
         config.addBlocksLevel(levels);
         config.addBankLevel(levels);
+    }
+
+    private String getBalanceMessage(String expansionPrice) {
+        return "Bank Level: " + getLevel() + "\n" + getBalance() + " / " + expansionPrice + " for expansion.";
     }
 }

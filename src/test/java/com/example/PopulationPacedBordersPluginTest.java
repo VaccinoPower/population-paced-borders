@@ -103,7 +103,7 @@ public class PopulationPacedBordersPluginTest {
         }
         server.setPlayers(players);
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(expectedSize * 2 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(Math.round(expectedSize * 2 * CHUNK_SIZE), server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }

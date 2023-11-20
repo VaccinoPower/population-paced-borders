@@ -1,6 +1,8 @@
 package com.example.command;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,14 @@ public abstract class PPBCommand extends Command {
     }
 
     protected abstract void action(@NotNull CommandSender sender, @NotNull String[] args);
+
+    protected static void sendOk(CommandSender sender, String msg) {
+        sender.sendMessage(Component.text(msg, NamedTextColor.GREEN));
+    }
+
+    protected static void sendOk(String msg) {
+        Bukkit.broadcast(Component.text(msg, NamedTextColor.GOLD));
+    }
 
     protected final boolean isCommand(String commandName) {
         return commandName.equals(getName()) || getAliases().contains(commandName);

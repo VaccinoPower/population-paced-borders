@@ -20,7 +20,7 @@ public class EconomyAddon extends PluginAddon {
                 new SendMoneyCommand(bank, borderExpander),
                 new ResetEconomyCommand(bank),
                 new LowerBankLevelCommand(bank, borderExpander),
-                new GrantLevelLoweringCommand(configManager.getEconomyConfig())
+                new GrantLevelLoweringCommand(bank)
         );
         this.listeners = Arrays.asList(
                 new InitializeEconomyListener(borderExpander),

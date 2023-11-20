@@ -4,6 +4,8 @@ import com.example.addon.economy.EconomyConfig;
 import com.example.addon.extender.ExtenderConfig;
 import com.example.addon.motd.MotdConfig;
 
+import java.util.logging.Logger;
+
 public class ConfigManager {
     private final MotdConfig motdConfig;
     private final EconomyConfig economyConfig;
@@ -45,5 +47,9 @@ public class ConfigManager {
         economyConfig.save();
         extenderConfig.save();
         worldConfig.save();
+    }
+
+    public Logger getLogger() {
+        return worldConfig.getLogger();
     }
 }

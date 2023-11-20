@@ -12,6 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.util.logging.Level;
 
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
@@ -28,30 +30,44 @@ public class SendMoneyCommand extends PPBCommand {
         this.borderExpander = borderExpander;
         addArgsRule(args -> args.length == 1, super.getUsage());
         addArgsRule(args -> NumberUtils.isCreatable(args[0]), super.getUsage());
-        addRule((sender, args) -> getUser(sender).getMoney().subtract(getMoney(args[0])).signum() != -1, "Not enough money.");
-        addArgsRule(args -> getMoney(args[0]).signum() == 1, "Amount to pay must be positive.");
+        addRule((sender, args) -> getUser(sender).getMoney().subtract(getMoney(args)).signum() != -1, "Not enough money.");
+        addArgsRule(args -> getMoney(args).signum() == 1, "Amount to pay must be positive.");
     }
 
     @Override
     protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
-        final BigDecimal money = getMoney(args[0]);
-        final User user = getUser(sender);
         try {
+            BigDecimal money = getMoney(args);
+            int bankLevel = bank.getLevel();
             bank.calculateExpansive(money.intValue());
-            borderExpander.expand();
-            user.takeMoney(money);
+            getUser(sender).takeMoney(money);
+            log(sender, args);
+            if (bankLevel != bank.getLevel()) {
+                sendOk(MessageFormat.format("Bank level increased to {0}.", bank.getLevel()));
+                borderExpander.expand();
+                borderExpander.logWorldSizes();
+            }
         } catch (InvalidFormulaException e) {
             sender.sendMessage(Component.text("[ERROR] Invalid formula. Please contact an admin.", RED));
         }
+    }
+
+    private void log(CommandSender sender, String[] args) {
+        String logPattern = "{0} send {1}. Bank level: {2}. Bank balance: {3}";
+        Object[] logParams = {sender.getName(), getMoney(args), bank.getLevel(), bank.getBalance()};
+        bank.getLogger().log(Level.INFO, logPattern, logParams);
     }
 
     private static User getUser(CommandSender sender) {
         return JavaPlugin.getPlugin(Essentials.class).getUser(sender.getName());
     }
 
-    private static BigDecimal getMoney(String number) {
+    private static BigDecimal getMoney(String[] args) {
+        if (args.length == 0) {
+            return BigDecimal.valueOf(-1);
+        }
         try {
-            return new BigDecimal(number);
+            return new BigDecimal(args[0]);
         } catch (NumberFormatException e) {
             return BigDecimal.valueOf(-1);
         }

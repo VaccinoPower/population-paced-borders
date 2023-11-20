@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
+import java.util.logging.Level;
 
 import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 

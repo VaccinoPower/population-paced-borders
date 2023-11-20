@@ -36,6 +36,10 @@ public class ExtenderConfig extends AbstractConfig {
         setWorldExpanded(getWorldExpandedBy() + size);
     }
 
+    public void subtractWorldExpanded(Integer size) {
+        setWorldExpanded(Math.max(0, getWorldExpandedBy() - size));
+    }
+
     public Map<String, Double> getWeights() {
         Map<String, Double> map = new HashMap<>();
         getItems().forEach(item -> map.put(item, getDropChance(item)));

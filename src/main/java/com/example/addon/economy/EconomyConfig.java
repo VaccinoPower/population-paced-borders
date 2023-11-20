@@ -52,10 +52,9 @@ public class EconomyConfig extends AbstractConfig {
         setValue(EXPANSION_BLOCKS_LEVEL, level);
     }
 
-    public void addLowering(Player player, int level) {
-        UUID uuid = player.getUniqueId();
+    public void addLowering(UUID uuid, String nickname, int level) {
         level += getLevelLowering(uuid);
-        setLevelLowering(uuid, player.getName(), level);
+        setLevelLowering(uuid, nickname, level);
     }
 
     public void subtractBankLevel(int level) {
