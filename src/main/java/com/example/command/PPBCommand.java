@@ -53,7 +53,7 @@ public abstract class PPBCommand extends Command {
 
     public final Component getHelpMessage() {
         Component header = Component.text("Command Help: ", NamedTextColor.GOLD)
-                .append(Component.text("/ppb" + getName(), NamedTextColor.WHITE));
+                .append(Component.text("/ppb " + getName(), NamedTextColor.WHITE));
         Component description = Component.text("Description: ", NamedTextColor.GOLD)
                 .append(Component.text(getDescription(), NamedTextColor.WHITE));
         Component usage = Component.text("Usage(s):", NamedTextColor.GOLD);

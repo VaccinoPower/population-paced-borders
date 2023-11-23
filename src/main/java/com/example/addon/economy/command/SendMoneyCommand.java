@@ -28,19 +28,20 @@ public class SendMoneyCommand extends PPBCommand {
         this.bank = bank;
         this.borderExpander = borderExpander;
         addArgsTemplate(new String[]{COMMAND_NAME, AMOUNT_ARGUMENT}, "Sends specified amount of the money to the bank balance.");
+        addArgsTemplate(new String[]{COMMAND_NAME}, "Sends all money to the bank balance.");
         addArgsRule(SendMoneyCommand::hasKeyWords, getHelpMessage());
         addRule(SendMoneyCommand::hasMoney, Component.text("Not enough money.", NamedTextColor.RED));
-        addArgsRule(SendMoneyCommand::isPositiveMoney, Component.text("Amount to pay must be positive.", NamedTextColor.RED));
+        addRule(SendMoneyCommand::isPositiveMoney, Component.text("Amount to pay must be positive.", NamedTextColor.RED));
     }
 
     @Override
     protected void action(@NotNull CommandSender sender, @NotNull String[] args) {
         try {
-            BigDecimal money = getMoney(args);
+            BigDecimal money = getMoney(sender, args);
             int bankLevel = bank.getLevel();
-            bank.recalculate(money.intValue());
+            bank.recalculate(money.longValue());
             getUser(sender).takeMoney(money);
-            log(sender, args);
+            log(sender, money);
             if (bankLevel != bank.getLevel()) {
                 sendOk(MessageFormat.format("Bank level increased to {0}.", bank.getLevel()));
                 borderExpander.expand();
@@ -51,35 +52,35 @@ public class SendMoneyCommand extends PPBCommand {
         }
     }
 
-    private void log(CommandSender sender, String[] args) {
+    private void log(CommandSender sender, BigDecimal money) {
         String logPattern = "{0} send {1}. Bank level: {2}. Bank balance: {3}";
-        Object[] logParams = {sender.getName(), getMoney(args), bank.getLevel(), bank.getBalance()};
+        Object[] logParams = {sender.getName(), money, bank.getLevel(), bank.getBalance()};
         bank.getLogger().log(Level.INFO, logPattern, logParams);
     }
 
     private static boolean isValidLength(String[] args) {
-        return args.length == 1;
+        return args.length == 0 || args.length == 1;
     }
     
     private static boolean hasKeyWords(String[] args) {
-        return isValidLength(args) && NumberUtils.isCreatable(args[0]);
+        return isValidLength(args) && (args.length == 0 || NumberUtils.isCreatable(args[0]));
     }
 
     private static boolean hasMoney(CommandSender sender, String[] args) {
-        return getUser(sender).getMoney().subtract(getMoney(args)).signum() != -1;
+        return getUser(sender).getMoney().subtract(getMoney(sender, args)).signum() != -1;
     }
 
-    private static boolean isPositiveMoney(String[] args) {
-        return getMoney(args).signum() == 1;
+    private static boolean isPositiveMoney(CommandSender sender, String[] args) {
+        return getMoney(sender, args).signum() == 1;
     }
 
     private static User getUser(CommandSender sender) {
         return JavaPlugin.getPlugin(Essentials.class).getUser(sender.getName());
     }
 
-    private static BigDecimal getMoney(String[] args) {
+    private static BigDecimal getMoney(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            return BigDecimal.valueOf(-1);
+            return getUser(sender).getMoney();
         }
         try {
             return new BigDecimal(args[0]);

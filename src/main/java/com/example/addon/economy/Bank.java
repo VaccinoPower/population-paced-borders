@@ -23,7 +23,7 @@ public class Bank {
         return config.getBankLevel();
     }
 
-    public int getBalance() {
+    public long getBalance() {
         return config.getBalance();
     }
 
@@ -59,9 +59,9 @@ public class Bank {
         recalculate(0);
     }
 
-    public void recalculate(int money) throws InvalidFormulaException {
-        int bankMoney = getBalance() + money;
-        int price = config.getExpansionPrice();
+    public void recalculate(long money) throws InvalidFormulaException {
+        long bankMoney = getBalance() + money;
+        long price = config.getExpansionPrice();
         if (price > bankMoney){
             config.setBalance(bankMoney);
             return;
