@@ -13,8 +13,8 @@ public class EconomyConfig extends AbstractConfig {
         super(configurator);
     }
 
-    public int getBalance() {
-        return getInt(EXPANSION_BALANCE);
+    public long getBalance() {
+        return getLong(EXPANSION_BALANCE);
     }
 
     public String getExpansionFormula() {
@@ -38,7 +38,7 @@ public class EconomyConfig extends AbstractConfig {
         setValue(PLAYERS.key + "." + uuid + "." + NICKNAME.key, nickname);
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(long balance) {
         setValue(EXPANSION_BALANCE, balance);
     }
 
@@ -59,12 +59,12 @@ public class EconomyConfig extends AbstractConfig {
         setBankLevel(Math.max(0, getBankLevel() - level));
     }
 
-    public int getExpansionPrice() throws InvalidFormulaException {
-        return (int) ExpressionCalculator.evaluateExpression(getExpansionFormula(), getBankLevel());
+    public long getExpansionPrice() throws InvalidFormulaException {
+        return (long) ExpressionCalculator.evaluateExpression(getExpansionFormula(), getBankLevel());
     }
 
-    public int getExpansionPrice(int bankLevel) throws InvalidFormulaException {
-        return (int) ExpressionCalculator.evaluateExpression(getExpansionFormula(), bankLevel);
+    public long getExpansionPrice(int bankLevel) throws InvalidFormulaException {
+        return (long) ExpressionCalculator.evaluateExpression(getExpansionFormula(), bankLevel);
     }
 
     public void addBlocksLevel(int level) {
