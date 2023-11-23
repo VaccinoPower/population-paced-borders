@@ -31,9 +31,16 @@ public class ExtenderStack extends ItemStack {
         return getExpansionSize(this);
     }
 
-    public static ExtenderStack create(ItemStack item) {
+    public static boolean isCreatable(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == CUSTOM_MODEL_DATE) {
+        return itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == CUSTOM_MODEL_DATE;
+    }
+
+    public static ExtenderStack create(ItemStack item) {
+        if (isCreatable(item)) {
             return new ExtenderStack(item.getType(), getExpansionSize(item));
         }
         return null;

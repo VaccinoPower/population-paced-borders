@@ -19,8 +19,15 @@ public class ExtenderBorderExpander extends BorderExpander {
         }
     }
 
+    public void reduce(int size) {
+        if (size > 0) {
+            extenderConfig.subtractWorldExpanded(size);
+            expand();
+        }
+    }
+
     @Override
-    protected Double getWorldSize(String worldName) {
-        return 2.0 * extenderConfig.getWorldExpandedBy();
+    protected Integer getWorldSize(String worldName) {
+        return 2 * extenderConfig.getWorldExpandedBy();
     }
 }

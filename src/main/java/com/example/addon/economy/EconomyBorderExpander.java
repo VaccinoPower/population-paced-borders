@@ -13,7 +13,7 @@ public class EconomyBorderExpander extends BorderExpander {
     }
 
     @Override
-    protected Double getWorldSize(String worldName) {
-        return 2.0 * economyConfig.getBlocksLevel();
+    protected Integer getWorldSize(String worldName) {
+        return 2 * economyConfig.getBlocksLevel();
     }
 }

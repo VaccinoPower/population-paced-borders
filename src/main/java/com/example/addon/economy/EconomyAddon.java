@@ -15,12 +15,13 @@ public class EconomyAddon extends PluginAddon {
     public EconomyAddon(ConfigManager configManager) {
         EconomyBorderExpander borderExpander = new EconomyBorderExpander(configManager.getEconomyConfig(), configManager.getWorldConfig());
         Bank bank = new Bank(configManager.getEconomyConfig());
+        BalanceCommand balanceCommand = new BalanceCommand(bank);
         this.commands = Arrays.asList(
-                new BalanceCommand(bank),
+                balanceCommand,
                 new SendMoneyCommand(bank, borderExpander),
                 new ResetEconomyCommand(bank),
                 new LowerBankLevelCommand(bank, borderExpander),
-                new GrantLevelLoweringCommand(configManager.getEconomyConfig())
+                new GrantLevelLoweringCommand(bank)
         );
         this.listeners = Arrays.asList(
                 new InitializeEconomyListener(borderExpander),

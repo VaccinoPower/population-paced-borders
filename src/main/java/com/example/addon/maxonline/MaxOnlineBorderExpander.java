@@ -3,10 +3,11 @@ package com.example.addon.maxonline;
 import com.example.addon.BorderExpander;
 import com.example.config.WorldConfig;
 import com.example.exeption.InvalidFormulaException;
-import com.example.util.ExpressionCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import java.util.logging.Logger;
+import java.util.logging.Level;
+
+import static com.example.util.ExpressionCalculator.evaluateExpression;
 
 public class MaxOnlineBorderExpander extends BorderExpander {
     private static final String EXTRA_BLOCKS_KEY = "maxOnline";
@@ -22,20 +23,20 @@ public class MaxOnlineBorderExpander extends BorderExpander {
         }
     }
 
-    private Logger getLogger() {
-        return worldConfig.getLogger();
+    public int getMaxOnline() {
+        return worldConfig.getMaxOnline();
     }
 
     @Override
-    protected Double getWorldSize(String worldName) {
+    protected Integer getWorldSize(String worldName) {
         String formula = worldConfig.getFormula(worldName) + "*" + (2 * worldConfig.getChunkSize());
         int maxOnline = worldConfig.getMaxOnline();
         try {
-            return ExpressionCalculator.evaluateExpression(formula, maxOnline);
+            return Math.toIntExact(Math.round(evaluateExpression(formula, maxOnline)));
         } catch (InvalidFormulaException e) {
-            getLogger().warning("Invalid formula: " + formula);
+            getLogger().log(Level.WARNING, e.getMessage());
             World world = Bukkit.getServer().getWorld(worldName);
-            return world == null ? 0 : world.getWorldBorder().getSize();
+            return world == null ? 0 : Math.toIntExact(Math.round(world.getWorldBorder().getSize()));
         }
     }
 }

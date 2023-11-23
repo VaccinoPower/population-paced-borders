@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class PopulationPacedBordersPluginTest {
@@ -34,6 +35,7 @@ public class PopulationPacedBordersPluginTest {
     public void setUp() {
         server = MockBukkit.mock();
         plugin = MockBukkit.load(PopulationPacedBordersPlugin.class);
+        plugin.getLogger().setLevel(Level.OFF);
         for (String worldName : WORLD_NAMES) {
             plugin.getConfig().createSection("worlds." + worldName);
             plugin.getConfig().set("chunk_size", CHUNK_SIZE);
@@ -103,7 +105,7 @@ public class PopulationPacedBordersPluginTest {
         }
         server.setPlayers(players);
         for (String world : WORLD_NAMES) {
-            Assertions.assertEquals(expectedSize * 2 * CHUNK_SIZE, server.getWorld(world).getWorldBorder().getSize(),
+            Assertions.assertEquals(Math.round(expectedSize * 2 * CHUNK_SIZE), server.getWorld(world).getWorldBorder().getSize(),
                     "World border is not expanded correctly.");
         }
     }

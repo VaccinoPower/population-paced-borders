@@ -10,16 +10,22 @@ import java.util.Collections;
 import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 public class BalanceCommand extends PPBCommand {
+    private static final String COMMAND_NAME = "balance";
+    private static final String COMMAND_ALIAS = "bal";
+    private static final String COMMAND_DESCRIPTION = "States the current level and balance of the bank.";
     private final Bank bank;
 
     public BalanceCommand(Bank bank) {
-        super("balance");
-        super.setPermission("ppb.command.balance");
-        super.setAliases(Collections.singletonList("bal"));
-        this.description = "View balance for expansion.";
-        this.usageMessage = "Usage:\n/ppb balance\n/ppb bal";
+        super(COMMAND_NAME, "ppb.command.balance", "Current state of the bank.");
+        super.setAliases(Collections.singletonList(COMMAND_ALIAS));
         this.bank = bank;
-        addArgsRule(args -> args.length == 0, super.getUsage());
+        addArgsTemplate(new String[]{COMMAND_NAME}, COMMAND_DESCRIPTION);
+        addArgsTemplate(new String[]{COMMAND_ALIAS}, COMMAND_DESCRIPTION);
+        addArgsRule(BalanceCommand::isValidLength, getHelpMessage());
+    }
+
+    private static boolean isValidLength(String[] args) {
+        return args.length == 0;
     }
 
     @Override

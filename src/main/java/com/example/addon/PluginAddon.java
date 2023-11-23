@@ -2,7 +2,6 @@ package com.example.addon;
 
 import com.example.command.PPBCommand;
 import org.bukkit.event.Listener;
-
 import java.util.Collections;
 import java.util.List;
 

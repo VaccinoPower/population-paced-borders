@@ -2,7 +2,6 @@ package com.example.config;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
