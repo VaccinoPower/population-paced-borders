@@ -5,13 +5,11 @@ import com.example.addon.extender.ExtenderStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
 import java.text.MessageFormat;
 import java.util.logging.Level;
 
@@ -37,11 +35,11 @@ public class PlayerRightClickListener implements Listener {
         int expansionSize = extender.getExpansionSize();
         if (expansionSize > 0) {
             borderExpander.expand(expansionSize);
-            sendOk(MessageFormat.format("World border expanded by {0} blocks.", expansionSize));
+            sendOk(MessageFormat.format("World border expanded by {0} block(s).", expansionSize));
             logPositiveExpansion(player, expansionSize);
         } else if (expansionSize < 0) {
             borderExpander.reduce(-expansionSize);
-            sendOk(MessageFormat.format("World border reduced by {0} blocks.", expansionSize));
+            sendOk(MessageFormat.format("World border reduced by {0} block(s).", expansionSize));
             logNegativeExpansion(player, expansionSize);
         } else {
             sendOk(player, "World border has not changed.");

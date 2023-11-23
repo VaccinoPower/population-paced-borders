@@ -4,33 +4,32 @@ import com.example.addon.economy.Bank;
 import com.example.addon.economy.EconomyBorderExpander;
 import com.example.command.PPBCommand;
 import com.example.exeption.InvalidFormulaException;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
 import java.text.MessageFormat;
 import java.util.logging.Level;
 
 public class LowerBankLevelCommand extends PPBCommand {
+    private static final String COMMAND_NAME = "bank";
     private static final String BANK_DOWN_ADMIN_PERMISSION = "ppb.command.bank-down.admin";
     private final Bank bank;
     private final EconomyBorderExpander borderExpander;
 
     public LowerBankLevelCommand(Bank bank, EconomyBorderExpander borderExpander) {
-        super("bank");
-        super.setPermission("ppb.command.bank-down;" + BANK_DOWN_ADMIN_PERMISSION);
-        this.description = "View balance for expansion.";
-        this.usageMessage = "Usage:\n/ppb bank down\n/ppb bank down <amount>";
+        super(COMMAND_NAME, "ppb.command.bank-down;" + BANK_DOWN_ADMIN_PERMISSION, "Decrease bank level.");
         this.bank = bank;
         this.borderExpander = borderExpander;
-        addArgsRule(args -> args.length > 0, super.getUsage());
-        addArgsRule(args -> args.length < 3, super.getUsage());
-        addArgsRule(args -> "down".equals(args[0]), super.getUsage());
-        addArgsRule(LowerBankLevelCommand::isPositiveLevel, "Amount of level-lowering must be positive number.");
-        addSenderRule(LowerBankLevelCommand::isValidUser, "This user cannot use the command.");
-        addRule(this::hasLevel, "Not enough levels to decreased bank level.");
+        addArgsTemplate(new String[]{COMMAND_NAME, "down"}, "Decreases 1 bank level.");
+        addArgsTemplate(new String[]{COMMAND_NAME, "down", AMOUNT_ARGUMENT}, "Decreases specified amount of the bank level.");
+        addArgsRule(LowerBankLevelCommand::hasKeywords, getHelpMessage());
+        addArgsRule(LowerBankLevelCommand::isPositiveLevel, Component.text("Amount of level-lowering must be positive number.", NamedTextColor.RED));
+        addSenderRule(LowerBankLevelCommand::isValidUser, Component.text("This user cannot use the command.", NamedTextColor.RED));
+        addRule(this::hasLevel, Component.text("Not enough levels to decreased bank level.", NamedTextColor.RED));
     }
 
     @Override
@@ -42,16 +41,16 @@ public class LowerBankLevelCommand extends PPBCommand {
                 sendOk(sender, "Bank level not changed: already minimum level.");
                 return;
             }
-            log(sender);
             bankLevel = bank.getLevel();
-            bank.calculateExpansive();
+            bank.recalculate();
+            borderExpander.expand();
             if (bankLevel == bank.getLevel()) {
                 sendOk(MessageFormat.format("Bank level has decreased to {0}.", bankLevel));
             } else {
                 sendOk(MessageFormat.format("Bank level has decreased to {0} and recalculated to {1}.", bankLevel, bank.getLevel()));
                 borderExpander.logWorldSizes();
             }
-            borderExpander.expand();
+            log(sender);
         } catch (InvalidFormulaException e) {
             bank.getLogger().log(Level.WARNING, e.getMessage());
         }
@@ -77,6 +76,14 @@ public class LowerBankLevelCommand extends PPBCommand {
         }
         Player player = getPlayer(sender);
         return player != null && bank.getLevelLowering(player) >= getLevel(args);
+    }
+
+    private static boolean isValidLength(String[] args) {
+        return args.length == 1 || args.length == 2;
+    }
+
+    private static boolean hasKeywords(String[] args) {
+        return isValidLength(args) && "down".equals(args[0]);
     }
 
     private static Player getPlayer(CommandSender sender) {

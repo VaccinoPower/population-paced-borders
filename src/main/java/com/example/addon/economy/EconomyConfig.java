@@ -4,8 +4,6 @@ import com.example.config.AbstractConfig;
 import com.example.config.Configurator;
 import com.example.exeption.InvalidFormulaException;
 import com.example.util.ExpressionCalculator;
-import org.bukkit.entity.Player;
-
 import java.util.UUID;
 
 import static com.example.config.ConfigKey.*;

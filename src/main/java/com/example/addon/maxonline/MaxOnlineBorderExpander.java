@@ -3,12 +3,9 @@ package com.example.addon.maxonline;
 import com.example.addon.BorderExpander;
 import com.example.config.WorldConfig;
 import com.example.exeption.InvalidFormulaException;
-import com.example.util.ExpressionCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.example.util.ExpressionCalculator.evaluateExpression;
 

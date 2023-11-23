@@ -6,9 +6,7 @@ import com.example.event.BorderChangeEvent;
 import com.example.exeption.InvalidFormulaException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import java.util.logging.Level;
-
 
 public class ChunkUpdateListener implements Listener {
     private final EconomyBorderExpander borderExpander;
@@ -31,7 +29,7 @@ public class ChunkUpdateListener implements Listener {
             return;
         }
         try {
-            bank.calculateExpansive();
+            bank.recalculate();
             borderExpander.expand();
             bank.getLogger().log(Level.INFO, "Bank blocks absorbed and bank level decreased to {0} (after recalculation).", bank.getLevel());
         } catch (InvalidFormulaException e) {

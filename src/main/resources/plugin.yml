@@ -1,13 +1,13 @@
 name: PopulationPacedBorders
-version: 4.1.0
+version: 4.2.0
 main: com.example.PopulationPacedBordersPlugin
 depend:
   - Essentials
-description: The world border changes depending on the number of players.
+description: The world border changes depending on the number of players, money and items.
 commands:
   ppb:
-    description: My description.
-    usage: Try /ppb help.
+    description: PopulationPacedBorders help.
+    usage: /ppb
 author: VaccinoPower
 website: https://github.com/VaccinoPower
 api-version: '1.20'

@@ -6,12 +6,12 @@ import com.example.addon.extender.ExtenderAddon;
 import com.example.addon.maxonline.MaxOnlineAddon;
 import com.example.addon.motd.MotdAddon;
 import com.example.command.CommandExecutorHandler;
+import com.example.command.PPBCommand;
 import com.example.command.ReloadCommand;
 import com.example.config.Configurator;
 import com.example.config.ConfigManager;
 import com.example.event.InitializeEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +28,7 @@ public class PopulationPacedBordersPlugin extends JavaPlugin {
     public void onEnable() {
         PluginCommand ppbCommand = Objects.requireNonNull(getCommand("ppb"));
         ppbCommand.setExecutor(commandExecutorHandler);
+        ppbCommand.setTabCompleter(commandExecutorHandler);
         registerAddons(Arrays.asList(
                 new MaxOnlineAddon(configManager),
                 new EconomyAddon(configManager),
@@ -59,7 +60,7 @@ public class PopulationPacedBordersPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(listener, this);
     }
 
-    private void registerCommand(Command command) {
+    private void registerCommand(PPBCommand command) {
         commandExecutorHandler.addCommand(command);
     }
 }

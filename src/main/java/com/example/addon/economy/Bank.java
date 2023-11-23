@@ -2,7 +2,6 @@ package com.example.addon.economy;
 
 import com.example.exeption.InvalidFormulaException;
 import org.bukkit.entity.Player;
-
 import java.util.logging.Logger;
 
 public class Bank {
@@ -56,11 +55,11 @@ public class Bank {
         config.setBalance(0);
     }
 
-    public void calculateExpansive() throws InvalidFormulaException {
-        calculateExpansive(0);
+    public void recalculate() throws InvalidFormulaException {
+        recalculate(0);
     }
 
-    public void calculateExpansive(int money) throws InvalidFormulaException {
+    public void recalculate(int money) throws InvalidFormulaException {
         int bankMoney = getBalance() + money;
         int price = config.getExpansionPrice();
         if (price > bankMoney){
